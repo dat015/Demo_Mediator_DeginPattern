@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using demo_mediator_design_pattern.dtos;
 using demo_mediator_design_pattern.services;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace demo_mediator_design_pattern.controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class OrderController : ControllerBase
+    public class OrderController : BaseController
     {
         private readonly OrderService _orderService;
 
@@ -22,26 +22,47 @@ namespace demo_mediator_design_pattern.controllers
         [HttpPost("place-order")]
         public async Task<IActionResult> PlaceOrder([FromBody] OrderRequestDto request)
         {
-            var response = await _orderService.PlaceOrder(request);
-            if (response.Success)
+            try
             {
-                return Ok(response);
+                // Validate model
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+                    return ErrorResponse($"Dữ liệu không hợp lệ: {string.Join(", ", errors)}");
+                }
+
+                var response = await _orderService.PlaceOrder(request);
+                if (response.Success)
+                {
+                    return SuccessResponse(response, "Đặt hàng thành công");
+                }
+                return ErrorResponse("Đặt hàng thất bại", response);
             }
-            return BadRequest(response);
+            catch (Exception ex)
+            {
+                return ErrorResponse($"Lỗi: {ex.Message}");
+            }
         }
 
         [HttpGet("get-all-orders")]
         public async Task<IActionResult> GetAllOrder()
         {
-            var response = await _orderService.GetAllOrder();
-            if (response == null)
+            try
             {
-                return BadRequest();
+                var response = await _orderService.GetAllOrder();
+                if (response == null)
+                {
+                    return ErrorResponse<List<OrderDto>>("Không thể lấy danh sách đơn hàng");
+                }
+                return SuccessResponse(response, "Lấy danh sách đơn hàng thành công");
             }
-            return Ok(new
+            catch (Exception ex)
             {
-                data = response
-            });
+                return ErrorResponse<List<OrderDto>>($"Lỗi: {ex.Message}");
+            }
         }
 
         [HttpPut("change-status-order")]
@@ -49,70 +70,54 @@ namespace demo_mediator_design_pattern.controllers
         {
             try
             {
+                // Validate model
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+                    return ErrorResponse($"Dữ liệu không hợp lệ: {string.Join(", ", errors)}");
+                }
+
                 var response = await _orderService.ChangeStatusOrder(request.id, request.status);
                 if (!response)
                 {
-                    return BadRequest(
-                    new
-                    {
-                        Message = "That bai",
-                        Success = false
-                    }
-                );
+                    return ErrorResponse("Cập nhật trạng thái đơn hàng thất bại");
                 }
-                return Ok(
-                      new
-                      {
-                          Message = "Thanh cong",
-                          Success = true
-                      }
-                );
+                return SuccessResponse("Cập nhật trạng thái đơn hàng thành công");
             }
             catch (Exception ex)
             {
-                return BadRequest(
-                    new
-                    {
-                        Message = ex.Message,
-                        Success = false
-                    }
-                );
+                return ErrorResponse($"Lỗi: {ex.Message}");
             }
         }
+
         [HttpDelete("delete-order")]
         public async Task<IActionResult> DeleteOrder([FromBody] OrderDto request)
         {
             try
             {
+                // Validate model
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+                    return ErrorResponse($"Dữ liệu không hợp lệ: {string.Join(", ", errors)}");
+                }
+
                 var response = await _orderService.DeleteOrder(request.id);
                 if (!response)
                 {
-                    return BadRequest(
-                        new
-                        {
-                            Message = "That bai",
-                            Success = false
-                        }
-                    );
+                    return ErrorResponse("Xóa đơn hàng thất bại");
                 }
-                return Ok(
-                    new
-                        {
-                            Message = "Thanh cong",
-                            Success = true
-                        }
-                );
-
+                return SuccessResponse("Xóa đơn hàng thành công");
             }
             catch (Exception ex)
             {
-                return BadRequest(
-                   new
-                   {
-                       Message = ex.Message,
-                       Success = false
-                   }
-               );
+                return ErrorResponse($"Lỗi: {ex.Message}");
             }
         }
     }

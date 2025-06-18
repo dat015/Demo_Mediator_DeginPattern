@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("demo_mediator_design_pattern")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+773517b0547ede75116be940ddcc8a8839406214")]
 [assembly: System.Reflection.AssemblyProductAttribute("demo_mediator_design_pattern")]
 [assembly: System.Reflection.AssemblyTitleAttribute("demo_mediator_design_pattern")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

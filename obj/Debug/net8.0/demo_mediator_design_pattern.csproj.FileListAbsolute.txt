@@ -167,3 +167,4 @@ C:\Users\Thao\source\C Sharp\demo_mediator_design_pattern\bin\Debug\net8.0\runti
 C:\Users\Thao\source\C Sharp\demo_mediator_design_pattern\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\Thao\source\C Sharp\demo_mediator_design_pattern\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
 C:\Users\Thao\source\C Sharp\demo_mediator_design_pattern\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+C:\Users\Thao\source\C Sharp\demo_mediator_design_pattern\obj\Debug\net8.0\demo_mediator_design_pattern.sourcelink.json
