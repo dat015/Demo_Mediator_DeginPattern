@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\demo_mediator_design_pattern.props" />
+</Project>
