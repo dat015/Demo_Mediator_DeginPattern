@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using demo_mediator_design_pattern.database;
 using demo_mediator_design_pattern.dtos;
+using demo_mediator_design_pattern.handlers.interfaces;
 using demo_mediator_design_pattern.mediators.interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,31 +12,20 @@ namespace demo_mediator_design_pattern.mediators
 {
     public class InventoryMediator : IInventoryMediator
     {
-        private readonly ApplicationDbContext _context;
-        public InventoryMediator(ApplicationDbContext context)
+        private readonly IInventoryHandler _handler;
+        public InventoryMediator(IInventoryHandler handler)
         {
-            _context = context;
+            _handler = handler;
         }
 
         public async Task<bool> HandleAsync(int productId, int quantity)
         {
-            var inventoryProduct = await _context.Inventories
-                .Where(i => i.productId == productId)
-                .FirstOrDefaultAsync();
-            if (inventoryProduct == null) return false;
-            if (inventoryProduct.quantityInStock >= quantity) return true;
-            return false;
+            return await _handler.HandleAsync(productId, quantity);
         }
 
         public async Task HandleUpdateAsync(int productId, int quantity)
         {
-            var inventoryProduct = await _context.Inventories
-                .Where(i => i.productId == productId)
-                .FirstOrDefaultAsync();
-            if (inventoryProduct == null) return;
-            inventoryProduct.quantityInStock -= quantity;
-            _context.Inventories.Update(inventoryProduct);
-            await _context.SaveChangesAsync();
+            await _handler.HandleUpdateAsync(productId,quantity);
         }
     }
 }
